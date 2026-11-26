@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Perpustakaan - UPT SMA Negeri 5 Sinjai</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        input, select {
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary);
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+            font-size: 0.85rem;
+            padding: 10px 15px;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            font-size: 0.85rem;
+            padding: 10px 15px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        .badge {
+            background-color: #dbeafe;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete-row {
+            background: #fee2e2;
+            color: var(--danger);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-delete-row:hover {
+            background: #fecaca;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #16a34a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>UPT SMA NEGERI 5 SINJAI</h1>
+    <p>Sistem Absensi Harian & Peminjaman Buku Perpustakaan</p>
+</header>
+
+<div class="container">
+    <!-- Form Input Absensi -->
+    <div class="card">
+        <h2 class="card-title">Form Absensi & Peminjaman Siswa</h2>
+        <form id="absensiForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap Siswa</label>
+                    <input type="text" id="nama" placeholder="Masukkan nama siswa..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="kelas">Kelas</label>
+                    <select id="kelas" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <optgroup label="Kelas X">
+                            <option value="X.1">X.1</option>
+                            <option value="X.2">X.2</option>
+                            <option value="X.3">X.3</option>
+                            <option value="X.4">X.4</option>
+                            <option value="X.5">X.5</option>
+                            <option value="X.6">X.6</option>
+                        </optgroup>
+                        <optgroup label="Kelas XI">
+                            <option value="XI.1">XI.1</option>
+                            <option value="XI.2">XI.2</option>
+                            <option value="XI.3">XI.3</option>
+                            <option value="XI.4">XI.4</option>
+                            <option value="XI.5">XI.5</option>
+                            <option value="XI.6">XI.6</option>
+                        </optgroup>
+                        <optgroup label="Kelas XII">
+                            <option value="XII.1">XII.1</option>
+                            <option value="XII.2">XII.2</option>
+                            <option value="XII.3">XII.3</option>
+                            <option value="XII.4">XII.4</option>
+                            <option value="XII.5">XII.5</option>
+                            <option value="XII.6">XII.6</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="buku">Judul Buku yang Dipinjam / Dibaca</label>
+                    <input type="text" id="buku" placeholder="Contoh: Laskar Pelangi, Matematika Kelas XI (Ketik '-' jika hanya berkunjung)" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="jumlah">Jumlah Buku yang Diambil</label>
+                    <input type="number" id="jumlah" min="0" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Kunjungan</label>
+                    <input type="date" id="tanggal" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Simpan Absensi</button>
+        </form>
+    </div>
+
+    <!-- Tabel Riwayat Absensi -->
+    <div class="card">
+        <h2 class="card-title">Daftar Pengunjung & Peminjam Hari Ini (<span id="totalData">0</span>)</h2>
+        
+        <div class="toolbar">
+            <input type="text" id="searchInput" class="search-box" placeholder="Cari nama siswa, kelas, atau buku...">
+            <div class="action-buttons">
+                <button onclick="exportToCSV()" class="btn btn-success">📥 Unduh Excel (CSV)</button>
+                <button onclick="hapusSemuaData()" class="btn btn-danger">🗑️ Reset Data</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Nama Siswa</th>
+                        <th>Kelas</th>
+                        <th>Buku yang Dipinjam</th>
+                        <th>Jumlah</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelBody">
+                    <!-- Data akan muncul di sini -->
+                </tbody>
+            </table>
+        </div>
+        <div id="emptyState" class="empty-state">
+            Belum ada data absensi siswa yang tercatat.
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast">Data absensi berhasil disimpan!</div>
+
+<script>
+    // Set tanggal hari ini secara otomatis
+    document.getElementById('tanggal').valueAsDate = new Date();
+
+    const STORAGE_KEY = 'absensi_perpus_sman5sinjai';
+    let dataAbsensi = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    const form = document.getElementById('absensiForm');
+    const tabelBody = document.getElementById('tabelBody');
+    const emptyState = document.getElementById('emptyState');
+    const totalDataSpan = document.getElementById('totalData');
+    const searchInput = document.getElementById('searchInput');
+
+    // Render data saat halaman pertama kali dibuka
+    renderTabel(dataAbsensi);
+
+    // Event saat form disubmit
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const nama = document.getElementById('nama').value.trim();
+        const kelas = document.getElementById('kelas').value;
+        const buku = document.getElementById('buku').value.trim();
+        const jumlah = document.getElementById('jumlah').value;
+        const tanggal = document.getElementById('tanggal').value;
+
+        const dataBaru = {
+            id: Date.now(),
+            nama,
+            kelas,
+            buku,
+            jumlah: parseInt(jumlah),
+            tanggal
+        };
+
+        dataAbsensi.unshift(dataBaru); // Tambahkan ke paling atas
+        simpanKeStorage();
+        renderTabel(dataAbsensi);
+
+        // Reset form kecuali tanggal
+        document.getElementById('nama').value = '';
+        document.getElementById('kelas').value = '';
+        document.getElementById('buku').value = '';
+        document.getElementById('jumlah').value = '1';
+
+        tampilkanToast("Absensi " + nama + " berhasil dicatat!");
+    });
+
+    // Fungsi pencarian
+    searchInput.addEventListener('input', function() {
+        const keyword = this.value.toLowerCase();
+        const hasilFilter = dataAbsensi.filter(item => 
+            item.nama.toLowerCase().includes(keyword) ||
+            item.kelas.toLowerCase().includes(keyword) ||
+            item.buku.toLowerCase().includes(keyword) ||
+            item.tanggal.includes(keyword)
+        );
+        renderTabel(hasilFilter);
+    });
+
+    function renderTabel(data) {
+        tabelBody.innerHTML = '';
+        totalDataSpan.textContent = data.length;
+
+        if (data.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+
+        data.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${formatTanggal(item.tanggal)}</td>
+                <td><strong>${escapeHTML(item.nama)}</strong></td>
+                <td><span class="badge">${escapeHTML(item.kelas)}</span></td>
+                <td>${escapeHTML(item.buku)}</td>
+                <td>${item.jumlah} buku</td>
+                <td><button class="btn-delete-row" onclick="hapusBaris(${item.id})">Hapus</button></td>
+            `;
+            tabelBody.appendChild(tr);
+        });
+    }
+
+    function hapusBaris(id) {
+        if (confirm('Hapus data absensi siswa ini?')) {
+            dataAbsensi = dataAbsensi.filter(item => item.id !== id);
+            simpanKeStorage();
+            renderTabel(dataAbsensi);
+        }
+    }
+
+    function hapusSemuaData() {
+        if (dataAbsensi.length === 0) return;
+        if (confirm('PERINGATAN: Semua data absensi akan dihapus permanen. Pastikan Anda sudah mengunduh file Excel terlebih dahulu. Lanjutkan?')) {
+            dataAbsensi = [];
+            simpanKeStorage();
+            renderTabel(dataAbsensi);
+        }
+    }
+
+    function simpanKeStorage() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataAbsensi));
+    }
+
+    function formatTanggal(tglString) {
+        const opsi = { day: '2-digit', month: 'short', year: 'numeric' };
+        return new Date(tglString).toLocaleDateString('id-ID', opsi);
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[tag]));
+    }
+
+    function tampilkanToast(pesan) {
+        const toast = document.getElementById('toast');
+        toast.textContent = pesan;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+
+    // Export data ke format CSV (bisa dibuka langsung di Microsoft Excel)
+    function exportToCSV() {
+        if (dataAbsensi.length === 0) {
+            alert('Tidak ada data untuk diunduh!');
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "No,Tanggal,Nama Siswa,Kelas,Buku yang Dipinjam,Jumlah Buku\n";
+
+        dataAbsensi.forEach((item, index) => {
+            const baris = [
+                index + 1,
+                item.tanggal,
+                `"${item.nama.replace(/"/g, '""')}"`,
+                `"${item.kelas}"`,
+                `"${item.buku.replace(/"/g, '""')}"`,
+                item.jumlah
+            ].join(",");
+            csvContent += baris + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        const tglHariIni = new Date().toISOString().slice(0, 10);
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Absensi_Perpus_SMAN5Sinjai_${tglHariIni}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
